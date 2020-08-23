@@ -1,0 +1,15 @@
+body{
+	display: grid;
+	place-content: center;
+	height: 100vh;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 20px;
+}
+
+div{
+	background-color: black;
+	width: 200px;
+	height: 200px;
+	border-radius: 3em;
+}
