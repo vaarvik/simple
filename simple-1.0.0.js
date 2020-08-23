@@ -243,6 +243,7 @@
 		 * @return  {Element}  The instance of this Element.
 		 */
 		appendTo( element ) {
+			//MODIFY: could take in an string and/or an array and append the element (or elements) to every element.
 			element.appendChild( this.element );
 			return this;
 		}
