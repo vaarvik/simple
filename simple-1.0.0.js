@@ -203,7 +203,8 @@
 			nodeElementsArray.forEach( element => {
 				this.element.push( new Element( element ) );
 			} );
-			return this.element;
+			console.log(this.element);
+			return this;
 		}
 
 		/**
@@ -272,8 +273,19 @@
 		 * @return  {Element}  The instance of this Element.
 		 */
 		addClass() {
+			let args = arguments;
+			if( Array.isArray( this.element ) ) {
+				this.element.forEach( function( element ) {
+					let classList = element.element.classList;
+					console.log("array", classList.__proto__);
+					classList.add.apply( classList, args ); //first parameter could be thought as "apply to"
+				} );
+				return this;
+			}
+			//else
 			let classList = this.element.classList;
-			classList.add.apply( classList, arguments ); //first parameter could be thought as "apply to"
+			console.log("not array", classList.__proto__ );
+			classList.add.apply( classList, args ); //first parameter could be thought as "apply to"
 			return this;
 		}
 
