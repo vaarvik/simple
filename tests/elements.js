@@ -10,6 +10,6 @@
 
   // S.element( ".div" )[0].log();
 
-  S.element( ".div" ).addClass("ohe", "ehy"); //FIX: make it possible to return an array with elements and then do actions to every element in that array
+  console.log(S.element( ".div" ).removeClass('span', "article")); //FIX: make it possible to return an array with elements and then do actions to every element in that array
 
 } )();

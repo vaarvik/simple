@@ -271,17 +271,7 @@
 		 */
 		addClass() {
 			let args = arguments;
-			if( Array.isArray( this.element ) ) {
-				this.element.forEach( function( element ) {
-					let classList = element.element.classList;
-					classList.add.apply( classList, args ); //first parameter could be thought as "apply to"
-				} );
-				return this;
-			}
-			//else
-			let classList = this.element.classList;
-			classList.add.apply( classList, args ); //first parameter could be thought as "apply to"
-			return this;
+			return this.updateClasses( true, args );
 		}
 
 		/**
@@ -294,9 +284,64 @@
 		 * @return  {Element}  The instance of this Element.
 		 */
 		removeClass() {
-			let classList = this.element.classList;
-			classList.remove.apply( classList, arguments ); //first parameter could be thought as "apply to"
+			let args = arguments;
+			return this.updateClasses( false, args );
+		}
+
+		/**
+		 * Update Classes In Array
+		 * ----------
+		 * Updates class names on several elements.
+		 *
+		 * @param   {String}  	option  "add" or "remove". Used to know if it should add/remove class(es).
+		 * @param   {Array}  	classNames  An array of the classnames to be added/removed.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		updateClassesInArray( option, classNames ) {
+			this.element.forEach( function( element ) {
+				let classList = element.element.classList;
+				classList[option].apply( classList, classNames ); //first parameter could be thought as "apply to"
+			} );
 			return this;
+		}
+
+		/**
+		 * Update Classes In Single
+		 * ----------
+		 * Updates class names on a single element.
+		 *
+		 * @param   {String}  option  "add" or "remove". Used to know if it should add/remove class(es).
+		 * @param   {Array}  	classNames  An array of the classnames to be added/removed.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		updateClassesInSingle( option, classNames ) {
+			let classList = this.element.classList;
+			classList[option].apply( classList, classNames ); //first parameter could be thought as "apply to"
+			return this;
+		}
+
+		/**
+		 * Update Classes
+		 * ----------
+		 * Updates class names on a single or several elements.
+		 *
+		 * @param   {Boolean}  add  Adds class(es) if true. Removes if false.
+		 * @param   {Array}  	classNames  An array of the classnames to be added/removed.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		updateClasses( add, classNames ) {
+			let option;
+			if( add ) option = "add";
+			else option = "remove";
+
+			if( Array.isArray( this.element ) ) {
+				return this.updateClassesInArray( option, classNames );
+			}
+			//else
+			return this.updateClassesInSingle( option, classNames );
 		}
 
 		/**
