@@ -24,7 +24,7 @@
 (
 	/**
 	 * Initial function
-	 * ================
+	 * ----------
 	 * The function that runs when the script loads.
 	 *
 	 * @param   {Window}  		global    	The global element - the DOM's window in most cases	 *
@@ -68,7 +68,7 @@
 	class Simple {
 		/**
 		 * Simple
-		 * ==========
+		 * ----------
 		 * The instance of another class that extends this one or null.
 		 * __________
 		 * Examples:
@@ -78,7 +78,7 @@
 
 		/**
 		 * Element
-		 * ==========
+		 * ----------
 		 * Create a new Element and triggers its constructor.
 		 *
 		 * @param   {String}  selector  The selector that the Element constructor takes in as an parameter.
@@ -92,7 +92,7 @@
 
 		/**
 		 * Element
-		 * ==========
+		 * ----------
 		 * Create a new Element and triggers its constructor.
 		 *
 		 * @param   {String|HTMLElement}  selector  The selector that the Element constructor takes in as an parameter.
@@ -101,17 +101,13 @@
 		 */
 		element( selector ) {
 			this.simple = new Element( selector );
-			//if the selector returns the HTML Elements in an array then return the array itself
-			if( Array.isArray( this.simple.element ) ){
-				this.simple = this.simple.element;
-			}
 			//if not return the Element itself
 			return this.simple;
 		}
 
 		/**
 		 * Log
-		 * ==========
+		 * ----------
 		 * Logs whatever is stored in this.simple to the console.
 		 * __________
 		 * Logs the Element instance if there this.simple has no value.
@@ -132,7 +128,7 @@
 
 		/**
 		 * Element Constructor
-		 * ==========
+		 * ----------
 		 * Creates or gets an HTML Element based of the selector.
 		 * __________
 		 *
@@ -150,7 +146,7 @@
 
 		/**
 		 * New
-		 * ==========
+		 * ----------
 		 * Creates a new HTML element.
 		 *
 		 * @param   {String}  tagName  The HTML tag that we want to new element to be.
@@ -165,7 +161,7 @@
 
 		/**
 		 * Get
-		 * ==========
+		 * ----------
 		 * Gets an HTML element from the DOM.
 		 *
 		 * @param   {String|HTMLElement}  selector  The selector that defines the element to be received.
@@ -187,7 +183,7 @@
 
 		/**
 		 * Get All
-		 * ==========
+		 * ----------
 		 * Gets all HTML elements associated with a selector.
 		 * __________
 		 * Makes this.element into an array with Element instances.
@@ -203,13 +199,13 @@
 			nodeElementsArray.forEach( element => {
 				this.element.push( new Element( element ) );
 			} );
-			console.log(this.element);
+			console.log(this, "th")
 			return this;
 		}
 
 		/**
 		 * Get By ID
-		 * ==========
+		 * ----------
 		 * Gets an HTML element from the DOM by its ID.
 		 *
 		 * @param   {String}  id  The ID that should be used to get the HTML Element.
@@ -224,19 +220,20 @@
 
 		/**
 		 * Remove
-		 * ========
+		 * ----------
 		 * Removes an element from the DOM
 		 *
 		 * @return  {HTMLElement}  The HTML Element that was deleted which therefore stops the possibility to add methods on the current instance after this method is run.
 		 */
 		remove() {
+			//MODIFY: Make it possible to remove several elements
 			if( !Array.isArray( this.element ) ) this.element.remove();
 			return this.element;
 		}
 
 		/**
 		 * Append To
-		 * ==========
+		 * ----------
 		 * Appends an element to another HTML element.
 		 *
 		 * @param   {HTMLElement}  element  The HTML element that the current element should be appended to.
@@ -251,7 +248,7 @@
 
 		/**
 		 * ID
-		 * ==========
+		 * ----------
 		 * Adds or change the ID of a single HTML Element.
 		 *
 		 * @param   {String}  id  The ID
@@ -265,7 +262,7 @@
 
 		/**
 		 * Add Class
-		 * ============
+		 * ----------
 		 * Adds classes for a single HTML element.
 		 * ____________
 		 * Takes in any number of string arguments.
@@ -277,21 +274,19 @@
 			if( Array.isArray( this.element ) ) {
 				this.element.forEach( function( element ) {
 					let classList = element.element.classList;
-					console.log("array", classList.__proto__);
 					classList.add.apply( classList, args ); //first parameter could be thought as "apply to"
 				} );
 				return this;
 			}
 			//else
 			let classList = this.element.classList;
-			console.log("not array", classList.__proto__ );
 			classList.add.apply( classList, args ); //first parameter could be thought as "apply to"
 			return this;
 		}
 
 		/**
 		 * Remove Class
-		 * ============
+		 * ----------
 		 * Removes classes for a single HTML element.
 		 * ____________
 		 * Takes in any number of string arguments.
@@ -306,7 +301,7 @@
 
 		/**
 		 * Toggle Class
-		 * ============
+		 * ----------
 		 * Toggles classes for a single HTML element.
 		 * ____________
 		 * Takes in any number of string arguments.
@@ -324,7 +319,7 @@
 
 		/**
 		 * On
-		 * ==========
+		 * ----------
 		 * Add Event Listener simplified.
 		 * __________
 		 * PS: "this" keyword can be used to refer to the element itself inside the callback function.
@@ -341,7 +336,7 @@
 
 		/**
 		 * Log
-		 * ==========
+		 * ----------
 		 * Logs the HTML Element to the console.
 		 * __________
 		 * Logs the Element instance if there is no HTML Element.
@@ -357,7 +352,7 @@
 
 		/**
 		 * Is Node?
-		 * ==========
+		 * ----------
 		 * Checks if a given parameter is an HTML Element.
 		 * __________
 		 * Private method.
