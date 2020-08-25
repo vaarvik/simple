@@ -199,8 +199,11 @@
 			nodeElementsArray.forEach( element => {
 				this.element.push( new Element( element ) );
 			} );
-			console.log(this, "th")
 			return this;
+		}
+
+		index( index ) {
+			//use to select a single Element from arrays in a Element instance
 		}
 
 		/**
