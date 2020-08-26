@@ -202,8 +202,20 @@
 			return this;
 		}
 
+		/**
+		 * Index
+		 * ----------
+		 * Gets a Element at a specific index if there is multiple elements stored in an array.
+		 *
+		 * @param   {Number}  index  The index of the elements that's requested.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
 		index( index ) {
-			//use to select a single Element from arrays in a Element instance
+			if( Array.isArray( this.element ) ) {
+				this.element = this.element[index].element;
+			}
+			return this;
 		}
 
 		/**

@@ -10,6 +10,6 @@
 
   // S.element( ".div" )[0].log();
 
-  console.log(S.element( ".div" ).addClass()); //FIX: make it possible to return an array with elements and then do actions to every element in that array
+  console.log(S.element( ".div" ).index(0)); //FIX: make it possible to return an array with elements and then do actions to every element in that array
 
 } )();
