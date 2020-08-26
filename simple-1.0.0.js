@@ -257,7 +257,24 @@
 		 */
 		appendTo( element ) {
 			//MODIFY: could take in an string and/or an array and append the element (or elements) to every element.
+			if( Array.isArray( this.element ) ) {
+				return this.appendSeveralTo( element );
+			}
 			element.appendChild( this.element );
+			return this;
+		}
+
+		/**
+		 * Append Several To
+		 *
+		 * @param   {HTMLElement}  parent  The HTML element that the current elements should be appended to.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		appendSeveralTo( parent ) {
+			this.element.forEach( function( element ) {
+				element.appendTo( parent );
+			} );
 			return this;
 		}
 
