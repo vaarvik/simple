@@ -249,33 +249,110 @@
 		/**
 		 * Append To
 		 * ----------
-		 * Appends an element to another HTML element.
+		 * Appends an element(s) to (another) HTML element(s).
 		 *
-		 * @param   {HTMLElement}  element  The HTML element that the current element should be appended to.
+		 * @param   {HTMLElement|Array}  element  The HTML element that the current element should be appended to.
 		 *
 		 * @return  {Element}  The instance of this Element.
 		 */
-		appendTo( element ) {
-			//MODIFY: could take in an string and/or an array and append the element (or elements) to every element.
-			if( Array.isArray( this.element ) ) {
-				return this.appendSeveralTo( element );
+		appendTo( parent ) {
+			//MODIFY: could take in an string instead of element(s).
+			if( Array.isArray( this.element ) && Array.isArray( parent )) {
+				return this.appendAllToThese( parent );
 			}
-			element.appendChild( this.element );
+			else if( Array.isArray( this.element ) ) {
+				return this.appendAllTo( parent );
+			}
+			return this.appendSingleTo( parent );
+		}
+
+		/**
+		 * Append All To These
+		 * ----------
+		 * Appends several elements to several HTML elements.
+		 *
+		 * @param   {Array}  parents  The HTML elements that the current elements should be appended to.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		appendAllToThese( parents ) {
+			parents.forEach( function( parent ) {
+				this.appendAllTo( parent.element ).cloneAll();
+			}.bind( this ) );
 			return this;
 		}
 
 		/**
-		 * Append Several To
+		 * Append All To
+		 * ----------
+		 * Appends several elements to a HTML element.
 		 *
 		 * @param   {HTMLElement}  parent  The HTML element that the current elements should be appended to.
 		 *
 		 * @return  {Element}  The instance of this Element.
 		 */
-		appendSeveralTo( parent ) {
+		appendAllTo( parent ) {
 			this.element.forEach( function( element ) {
 				element.appendTo( parent );
 			} );
 			return this;
+		}
+
+		/**
+		 * Append Single To
+		 * ----------
+		 * Appends a single element to another HTML element.
+		 *
+		 * @param   {HTMLElement}  parent  The HTML element that the current elements should be appended to.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		appendSingleTo( parent ) {
+			parent.appendChild( this.element );
+			return this;
+		}
+
+		/**
+		 * Clone
+		 * ----------
+		 * Clones a single HTML element or all HTML elements in this instance.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		clone() {
+			if( Array.isArray( this.element ) ) {
+				return this.cloneAll();
+			}
+			return this.cloneSingle();
+		}
+
+		/**
+		 * Clone All
+		 * ----------
+		 * Clones all current HTML elements in this instance.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		cloneAll() {
+			let clones = [];
+			this.element.forEach( function( element ) {
+				let clone = new Element();
+				clone.element = element.element.cloneNode()
+				clones.push( clone );
+			} );
+			this.element = clones;
+			return this;
+		}
+
+		/**
+		 * Clone Single
+		 * ----------
+		 * Clones a single HTML elements in this instance.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		cloneSingle() {
+			this.element = this.element.cloneNode();
 		}
 
 		/**
