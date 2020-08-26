@@ -15,6 +15,6 @@
 
   // S.element( ".div" )[0].log();
   // console.log()
-  S.element( "div" ).appendTo(S.element( "span" ).element); //FIX: make it possible to return an array with elements and then do actions to every element in that array
+  S.element( "div" ).appendTo(S.element( "span" ).element).addClass("hey"); //FIX: make it possible to return an array with elements and then do actions to every element in that array
 
 } )();

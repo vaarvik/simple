@@ -276,8 +276,31 @@
 		 * @return  {Element}  The instance of this Element.
 		 */
 		appendAllToThese( parents ) {
-			parents.forEach( function( parent ) {
-				this.appendAllTo( parent.element ).cloneAll();
+			let allElements = [];
+			parents.forEach( function( parent, i ) {
+				allElements.push( this.element );
+				//Prevent cloning if enough elements are cloned
+				if( i !== parents.length -1 ) this.appendAllTo( parent.element ).cloneAll();
+				else this.appendAllTo( parent.element );
+			}.bind( this ) );
+			return this.elemenizeThis(allElements);
+		}
+
+		/**
+		 * Elemenize This
+		 * ----------
+		 * Pushes individual elements from a multi dimentional array seperate into this Element instance.
+		 *
+		 * @param   {HTMLElement}  elements  The multi dimentional array with the elements.
+		 *
+		 * @return  {Element}  The instance of this Element.
+		 */
+		elemenizeThis( elements ){
+			this.element = [];
+			elements.forEach( function( elementArray ) {
+				elementArray.forEach( function( element ) {
+					this.element.push( element );
+				}.bind( this ) );
 			}.bind( this ) );
 			return this;
 		}
