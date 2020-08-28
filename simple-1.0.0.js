@@ -119,6 +119,48 @@
 			else console.log( this );
 			return this;
 		}
+
+		/**
+		 * Not Array Match
+		 * ----------
+		 * Checks if an array is a match or not
+		 *
+		 * @param   {Array}  	template	The array to check the subjects against.
+		 * @param   {[type]}  	subjects  	The array that must have the same type of subjects as the template array has.
+		 *
+		 * @return  {Boolean|any}           Returns the value if there is a mismatch. Returns false if there is notArrayMatch (cause then it is array matches and all is true).
+		 */
+		notArrayMatch( template, subjects ){
+			let notUnique = true;
+			for( let i in subjects ) {
+				let subject = subjects[i];
+				notUnique = !this.inArray( subject, template );
+				if( notUnique ) {
+					notUnique = subject;
+					break;
+				};
+			};
+			return notUnique;
+		}
+
+		/**
+		 * In Array
+		 * ----------
+		 * Checks if a selected subject is a part of an array.
+		 *
+		 * @param   {any}  		subject 	The subject to be checked against the array.
+		 * @param   {Array}  	array    	The array.
+		 *
+		 * @return  {Boolean}           	Returns if the subject is in the array or not.
+		 */
+		inArray( subject, array ){
+			for( let i in array ) {
+				let validator = array[i];
+				if( subject === validator ) {
+					return true;
+				}
+			};
+		}
 	};
 
 	//Reconsider using class for IE support
@@ -205,18 +247,75 @@
 		/**
 		 * Index
 		 * ----------
-		 * Gets a Element at a specific index if there is multiple elements stored in an array.
+		 * Gets an Element at a specific index if there is multiple elements stored in an array.
 		 *
 		 * @param   {Number}  index  The index of the elements that's requested.
 		 *
 		 * @return  {Element}  The instance of this Element.
 		 */
 		index( index ) {
-			if( Array.isArray( this.element ) ) {
+			try {
 				this.element = this.element[index].element;
+			} catch( err ) {
+				//COMMENT: might merge getErrors into throwErrors
+				this.#throwError( err, function( output ) {
+					output = "Can't find the requested array element. " + output;
+					this.#getErrors( this.element, output, ["array", "node-element"] );
+				}.bind( this ) );
 			}
 			return this;
 		}
+
+		/**
+		 * Get Errors
+		 * ----------
+		 * Gets the correct error regarding the subject that fits with the validators given as a parameter. Then throws the error.
+		 *
+		 * @param   {any}  		subject	 	 The subject that has an error.
+		 * @param   {String} 	output		 The output string for the error.
+		 * @param   {Array}  	validators 	 The type of errors it might be.
+		 */
+		#getErrors ( subject, output, validators ) {
+			let templateArray = ["array", "node-element"];
+
+			//throw an error if the validators array's values match with the template array
+			if( this.notArrayMatch( templateArray, validators ) ) {
+				throw new Error ( output  + " is not an array.");
+			}
+			//loop every validator and check if there is a logic error
+			validators.forEach(validator => {
+				if( validator === "array" && !Array.isArray( subject ) ){
+					throw new Error ( output  + " is not an array.");
+				}
+				if( validator === "node-element" && !this.#isNode( subject ) ){
+					throw new Error ( output  + " is not a HTML Element.");
+				}
+			});
+		}
+
+		/**
+		 * Throw Error
+		 * ----------
+		 * Throws an error.
+		 *
+		 * @param   {Error}  		err	 	 	The error that is received for the case.
+		 * @param   {Function} 		callback	A callback function if the user wants to add custom errors before the default thrown error.
+		 */
+		#throwError( err, callback ) {
+			let output = "";
+
+			//checks if this.element is a HTML element and sets the output string based on that
+			if( this.#isNode(this.element) ) output += this.element.outerHTML;
+			else output += this.element;
+
+			//runs the callback function and send with the output as a parameter
+			callback( output );
+
+			//throw the default error if there's not one already
+			throw err;
+		}
+
+
 
 		/**
 		 * Get By ID
