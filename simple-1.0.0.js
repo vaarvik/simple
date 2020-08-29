@@ -243,12 +243,27 @@
 			let nodeElements = D.querySelectorAll( selector );
 			let nodeElementsArray = Array.prototype.slice.call( nodeElements ); //does not work correctly yet
 			this.element = [];
+
 			nodeElementsArray.forEach( element => {
 				this.element.push( new Element( element ) );
 			} );
 			return this;
 		}
 
+		/**
+		 * Get By ID
+		 * ----------
+		 * Gets an HTML element from the DOM by its ID.
+		 *
+		 * @param   {String}  id  The ID that should be used to get the HTML Element.
+		 *
+		 * @return  {[type]}      [return description]
+		 */
+		getById( id ) {
+			if( id[0] === "#" ) id = id.substring(1);
+			this.element = D.querySelector( "#" + id );
+			return this;
+		}
 		/**
 		 * Index
 		 * ----------
@@ -321,23 +336,6 @@
 			throw err;
 		}
 
-
-
-		/**
-		 * Get By ID
-		 * ----------
-		 * Gets an HTML element from the DOM by its ID.
-		 *
-		 * @param   {String}  id  The ID that should be used to get the HTML Element.
-		 *
-		 * @return  {[type]}      [return description]
-		 */
-		getById( id ) {
-			if( id[0] === "#" ) id = id.substring(1);
-			this.element = D.querySelector( "#" + id );
-			return this;
-		}
-
 		/**
 		 * Remove
 		 * ----------
@@ -356,12 +354,20 @@
 		 * ----------
 		 * Appends an element(s) to (another) HTML element(s).
 		 *
-		 * @param   {HTMLElement|Array}  element  The HTML element that the current element should be appended to.
+		 * @param   {HTMLElement|Array|String}  parent  The HTML element that the current element should be appended to.
 		 *
 		 * @return  {Element}  The instance of this Element.
 		 */
 		appendTo( parent ) {
-			//MODIFY: could take in an string instead of element(s).
+			//store old this.element in here
+			let oldEl = this.element;
+			if( this.isString( parent ) ) {
+				parent = this.get( parent ).element;
+			}
+
+			//reset this.element after parent is set cause this.get changes this.element.
+			this.element = oldEl;
+
 			if( Array.isArray( this.element ) && Array.isArray( parent )) {
 				return this.appendAllToThese( parent );
 			}
