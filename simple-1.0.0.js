@@ -260,8 +260,15 @@
 		 * @return  {[type]}      [return description]
 		 */
 		getById( id ) {
+			//remove # from the string.
 			if( id[0] === "#" ) id = id.substring(1);
-			this.element = D.querySelector( "#" + id );
+
+			//check if an element can be received with the given string
+			try {
+				this.element = D.querySelector( "#" + id );
+			} catch (err) {
+				this.#throwError( id, err, ["number"], "An element ID can't be a pure number. You tried to receive an element with the ID of " + id + "." )
+			}
 			return this;
 		}
 		/**
@@ -292,7 +299,7 @@
 		 * @param   {Array}  	validators 	 The type of errors it might be.
 		 */
 		#getErrors ( subject, output, validators ) {
-			let templateArray = ["array", "node-element"];
+			let templateArray = ["array", "node-element", "number"];
 
 			//throw an error if the validators array's values match with the template array
 			if( this.notArrayMatch( templateArray, validators ) ) {
@@ -305,6 +312,9 @@
 				}
 				if( validator === "node-element" && !this.#isNode( subject ) ){
 					throw new Error ( output  + " is not a HTML Element.");
+				}
+				if( validator === "number" && !isNaN( subject ) ){
+					throw new Error ( output  + " is a number.");
 				}
 			});
 		}
