@@ -166,6 +166,91 @@
 			if( typeof subject === 'string' || subject instanceof String ) return true;
 			return false;
 		}
+
+		/**
+		 * Is Node?
+		 * ----------
+		 * Checks if a given parameter is an HTML Element.
+		 * __________
+		 * Private method.
+		 *
+		 * @param {HTMLElement}		element		The parameter to be checked.
+		 *
+		 * @return {Boolean}
+		 */
+		isNode( element ){
+			if( typeof Node === "object" ) {
+				return element instanceof Node;
+			}
+			else {
+				return (
+					element &&
+					typeof element === "object" &&
+					typeof element.nodeType === "number" &&
+					typeof element.nodeName==="string"
+					);
+			}
+		  }
+
+		/**
+		 * Get Errors
+		 * ----------
+		 * Gets the correct error regarding the subject that fits with the validators given as a parameter. Then throws the error.
+		 *
+		 * @param   {any}  		subject	 	 The subject that has an error.
+		 * @param   {String} 	output		 The output string for the error.
+		 * @param   {Array}  	validators 	 The type of errors it might be.
+		 */
+		getErrors ( subject, output, validators ) {
+			let templateArray = ["array", "node-element", "number", "starts-with-number"];
+
+			//throw an error if the validators array's values match with the template array
+			if( this.notArrayMatch( templateArray, validators ) ) {
+				throw new Error ( output  + " is not an array.");
+			}
+			//loop every validator and check if there is a logic error
+			validators.forEach(validator => {
+				if( validator === "array" && !Array.isArray( subject ) ){
+					throw new Error ( output  + " is not an array.");
+				}
+				if( validator === "node-element" && !this.isNode( subject ) ){
+					throw new Error ( output  + " is not a HTML Element.");
+				}
+				if( validator === "number" && !isNaN( subject ) ){
+					throw new Error ( output  + " is a number.");
+				}
+				else if( validator === "starts-with-number" && !isNaN( subject[0] ) ){
+					throw new Error ( output + " starts with a number." );
+				}
+			});
+		}
+
+		/**
+		 * Throw Error
+		 * ----------
+		 * Throws an error.
+		 *
+		 * @param   {any}  			err	 	 	The subject that makes the error happen.
+		 * @param   {Error}  		err	 	 	The error that is received for the case.
+		 * @param   {Array}  		validators 	An array with strings for what error types to be checked for.
+		 * @param   {String} 		preString	Adds a string to the error if the user wants to customize the output.
+		 */
+		throwError( subject, err, validators, preString ) {
+			let output = "";
+			//checks if subject is a HTML element and sets the output string based on that
+			if( subject == undefined || subject.length <= 0 ) output += "This";
+			else if( this.isNode(subject) ) output += "'" + subject.outerHTML + "'";
+			else output += "'" + subject + "'";
+
+			//adds the preString to the output
+			if( preString ) output = preString + " " + output;
+
+			//throws the errors
+			this.getErrors( subject, output, validators );
+
+			//throw the default error if there's not one already
+			throw err;
+		}
 	};
 
 	//Reconsider using class for IE support
@@ -219,7 +304,7 @@
 			if( selector[0] === "#" ) {
 				return this.getById( selector );
 			}
-			else if( this.#isNode( selector ) ) {
+			else if( this.isNode( selector ) ) {
 				this.element = selector;
 				return this;
 			}
@@ -267,7 +352,7 @@
 			try {
 				this.element = D.querySelector( "#" + id );
 			} catch (err) {
-				this.#throwError( id, err, ["number"], "An element ID can't be a pure number. You tried to receive an element with the ID of " + id + "." )
+				this.throwError( id, err, ["number", "starts-with-number"], "An element ID can't start with a number. You tried to receive an element with the ID of '" + id + "'." )
 			}
 			return this;
 		}
@@ -284,66 +369,9 @@
 			try {
 				this.element = this.element[index].element;
 			} catch( err ) {
-				this.#throwError( this.element, err, ["array", "node-element"], "Can't find the requested array element.");
+				this.throwError( this.element, err, ["array", "node-element"], "Can't find the requested array element.");
 			}
 			return this;
-		}
-
-		/**
-		 * Get Errors
-		 * ----------
-		 * Gets the correct error regarding the subject that fits with the validators given as a parameter. Then throws the error.
-		 *
-		 * @param   {any}  		subject	 	 The subject that has an error.
-		 * @param   {String} 	output		 The output string for the error.
-		 * @param   {Array}  	validators 	 The type of errors it might be.
-		 */
-		#getErrors ( subject, output, validators ) {
-			let templateArray = ["array", "node-element", "number"];
-
-			//throw an error if the validators array's values match with the template array
-			if( this.notArrayMatch( templateArray, validators ) ) {
-				throw new Error ( output  + " is not an array.");
-			}
-			//loop every validator and check if there is a logic error
-			validators.forEach(validator => {
-				if( validator === "array" && !Array.isArray( subject ) ){
-					throw new Error ( output  + " is not an array.");
-				}
-				if( validator === "node-element" && !this.#isNode( subject ) ){
-					throw new Error ( output  + " is not a HTML Element.");
-				}
-				if( validator === "number" && !isNaN( subject ) ){
-					throw new Error ( output  + " is a number.");
-				}
-			});
-		}
-
-		/**
-		 * Throw Error
-		 * ----------
-		 * Throws an error.
-		 *
-		 * @param   {any}  			err	 	 	The subject that makes the error happen.
-		 * @param   {Error}  		err	 	 	The error that is received for the case.
-		 * @param   {Array}  		validators 	An array with strings for what error types to be checked for.
-		 * @param   {String} 		preString	Adds a string to the error if the user wants to customize the output.
-		 */
-		#throwError( subject, err, validators, preString ) {
-			let output = "";
-			//checks if subject is a HTML element and sets the output string based on that
-			if( subject == undefined || subject.length <= 0 ) output += "This";
-			else if( this.#isNode(subject) ) output += subject.outerHTML;
-			else output += subject;
-
-			//adds the preString to the output
-			if( preString ) output = preString + " " + output;
-
-			//throws the errors
-			this.#getErrors( subject, output, validators );
-
-			//throw the default error if there's not one already
-			throw err;
 		}
 
 		/**
@@ -647,31 +675,6 @@
 			else console.log( this );
 			return this;
 		}
-
-		/**
-		 * Is Node?
-		 * ----------
-		 * Checks if a given parameter is an HTML Element.
-		 * __________
-		 * Private method.
-		 *
-		 * @param {HTMLElement}		element		The parameter to be checked.
-		 *
-		 * @return {Boolean}
-		 */
-		#isNode( element ){
-			if( typeof Node === "object" ) {
-				return element instanceof Node;
-			}
-			else {
-				return (
-					element &&
-					typeof element === "object" &&
-					typeof element.nodeType === "number" &&
-					typeof element.nodeName==="string"
-					);
-			}
-		  }
 
 	}
 

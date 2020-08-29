@@ -14,7 +14,8 @@
   let span3 = S.element( "<span>" ).id("3").appendTo( D.body );
 
   // S.element( ".div" )[0].log();
-  S.element( "#3").log(); //FIX: make it possible to return an array with elements and then do actions to every element in that array
+  S.element().getAll("#hett").log();
+  S.element( "#3ssdfe-ee").log(); //FIX: make it possible to return an array with elements and then do actions to every element in that array
   S.element( "div" ).appendTo( "span" ) //FIX: make it possible to return an array with elements and then do actions to every element in that array
 
 } )();
