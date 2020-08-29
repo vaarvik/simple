@@ -4,7 +4,7 @@
   let div = E( "<div>" ).addClass( "div", "span", "article" ).id( "div" ).appendTo( D.body ).on( "click", function() {
     div.toggleClass( "div" ).log();
   } );
-  let div2 = E( "<div>" ).addClass( "div", "span", "article" ).id( "div2" ).appendTo( D.body ).on( "click", function() {
+  let div2 = E( "<div>" ).addClass( "span", "article" ).id( "div2" ).appendTo( D.body ).on( "click", function() {
     div.toggleClass( "div" ).log();
   } );
   let div3 = E( "<div>" ).addClass( "wrapper" ).id( "div3" ).appendTo( D.body );
@@ -12,7 +12,7 @@
   let span1 = E( "<span>" ).id("hett").appendTo( D.body );
   let span2 = E( "<span>" ).id("s12").appendTo( D.body );
   let span3 = E( "<span>" ).id("3").appendTo( D.body );
-  let span4 = E().new("article").id("fejl3").appendTo( D.body );
+  let span4 = E().new("article").id("fejl3").appendTo( D.body ).get("span").getAll(".btn").appendTo("#div3").addClass( "single", "ono" ).toggleClass( "ono" ).addClass( "ono" ).removeClass( "ono" );
 
   // E( ".div" )[0].log();
   E("#hett").log();

@@ -202,16 +202,20 @@
 		 * @param   {Array}  	validators 	 The type of errors it might be.
 		 */
 		getErrors ( subject, output, validators ) {
-			let templateArray = ["array", "node-element", "number", "starts-with-number"];
+			const ERROR_ARRAY = ["array", "node-element", "number", "starts-with-number"];
 
 			//throw an error if the validators array's values match with the template array
-			if( this.notArrayMatch( templateArray, validators ) ) {
-				throw new Error ( output  + " is not an array.");
+			let noArrayMatch = this.notArrayMatch( ERROR_ARRAY, validators );
+			if( noArrayMatch ) {
+				throw new Error ( "'" + noArrayMatch + "'" + " is not in the template array for erros: " + ERROR_ARRAY);
 			}
 			//loop every validator and check if there is a logic error
 			validators.forEach(validator => {
 				if( validator === "array" && !Array.isArray( subject ) ){
 					throw new Error ( output  + " is not an array.");
+				}
+				else if( validator === "array" && subject.length <= 0 ){
+					throw new Error ( output  + " is an empty array.");
 				}
 				if( validator === "node-element" && !this.isNode( subject ) ){
 					throw new Error ( output  + " is not a HTML Element.");
@@ -329,6 +333,12 @@
 			let nodeElementsArray = Array.prototype.slice.call( nodeElements ); //does not work correctly yet
 			this.element = [];
 
+			//throw an error if there is no elements found
+			if( nodeElementsArray <= 0 ) {
+				this.throwError( nodeElementsArray, new Error, ["array"], "Can't find any elements for the selector '" + selector + "'." );
+			}
+
+			//add the elements from nodeElementsArray to this instanse.element
 			nodeElementsArray.forEach( element => {
 				this.element.push( new Element( element ) );
 			} );
