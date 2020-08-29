@@ -321,10 +321,10 @@
 		 */
 		#throwError( subject, err, validators, preString ) {
 			let output = "";
-
-			//checks if this.element is a HTML element and sets the output string based on that
-			if( this.#isNode(this.element) ) output += this.element.outerHTML;
-			else output += this.element;
+			//checks if subject is a HTML element and sets the output string based on that
+			if( subject == undefined || subject.length <= 0 ) output += "This";
+			else if( this.#isNode(subject) ) output += subject.outerHTML;
+			else output += subject;
 
 			//adds the preString to the output
 			if( preString ) output = preString + " " + output;
