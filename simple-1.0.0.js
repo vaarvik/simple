@@ -679,10 +679,15 @@
 	}
 
 	let S = new Simple();
+	function E( el ){
+		if( el ) return new Element( el );
+		else return new Element();
+	}
 
 	//as long as there is a window then add the Simple instance as a global variable that can be accessed by writing "Simple" or just "S".
 	if ( typeof isModern === "undefined" ) {
 		window.Simple = window.S = S;
+		window.Element = window.E = E;
 	}
 
 	return S;
