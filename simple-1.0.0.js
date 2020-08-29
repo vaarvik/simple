@@ -257,11 +257,7 @@
 			try {
 				this.element = this.element[index].element;
 			} catch( err ) {
-				//COMMENT: might merge getErrors into throwErrors
-				this.#throwError( err, function( output ) {
-					output = "Can't find the requested array element. " + output;
-					this.#getErrors( this.element, output, ["array", "node-element"] );
-				}.bind( this ) );
+				this.#throwError( this.element, err, ["array", "node-element"], "Can't find the requested array element.");
 			}
 			return this;
 		}
@@ -298,18 +294,23 @@
 		 * ----------
 		 * Throws an error.
 		 *
+		 * @param   {any}  			err	 	 	The subject that makes the error happen.
 		 * @param   {Error}  		err	 	 	The error that is received for the case.
-		 * @param   {Function} 		callback	A callback function if the user wants to add custom errors before the default thrown error.
+		 * @param   {Array}  		validators 	An array with strings for what error types to be checked for.
+		 * @param   {String} 		preString	Adds a string to the error if the user wants to customize the output.
 		 */
-		#throwError( err, callback ) {
+		#throwError( subject, err, validators, preString ) {
 			let output = "";
 
 			//checks if this.element is a HTML element and sets the output string based on that
 			if( this.#isNode(this.element) ) output += this.element.outerHTML;
 			else output += this.element;
 
-			//runs the callback function and send with the output as a parameter
-			callback( output );
+			//adds the preString to the output
+			if( preString ) output = preString + " " + output;
+
+			//throws the errors
+			this.#getErrors( subject, output, validators );
 
 			//throw the default error if there's not one already
 			throw err;
