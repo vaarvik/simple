@@ -161,6 +161,11 @@
 				}
 			};
 		}
+
+		isString( subject ) {
+			if( typeof subject === 'string' || subject instanceof String ) return true;
+			return false;
+		}
 	};
 
 	//Reconsider using class for IE support
